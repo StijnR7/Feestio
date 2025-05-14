@@ -1,35 +1,31 @@
-import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import {getDocs, collection, doc} from 'firebase/firestore'
+import { db } from './config/firebase';
+import {useEffect, useState} from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [getTaskList, setTaskList] = useState([]);
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    useEffect(()=>{
+        const getTasks = async () => {
+            const data = await getDocs(collection(db, "tasks"));
+            setTaskList(data.docs.map((doc) => ({...doc.data(), id: doc.id})));
+        }
+        getTasks();
+    },[])
+
+    return (
+        <>
+            {getTaskList.map(task => {
+                return (
+                    <h2 key={task.id}>{task.title}</h2>
+                )
+            })}
+        </>
+    )
+
 }
 
 export default App
