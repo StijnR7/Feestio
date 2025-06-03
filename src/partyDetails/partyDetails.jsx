@@ -13,7 +13,9 @@ function partyDetails() {
     return (
         <>
           Title: {party.Title} <br />
-          Location: {party.Location}
+          Location: {party.Location} <br />
+          Start Time: {party.StartTime} <br />
+          End Time: {party.EndTime}
          
         </>
     )
