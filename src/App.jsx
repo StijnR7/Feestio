@@ -6,13 +6,15 @@ import { db } from './config/firebase';
 import {useEffect, useState} from "react";
 import { BrowserRouter, Routes, Route } from "react-router";
 import Admin from "./admin/admin";
+import PartyDetails from "./partyDetails/partyDetails";
 function App() {
    
     return (
         <>
            <Routes>
             <Route path="/" element={<Admin/>}/>
-            <Route path="party/:id" element={<Admin/>}/>
+            <Route path="party/:id" element={<PartyDetails/>}/>
+            
            </Routes>
         </>
     )
