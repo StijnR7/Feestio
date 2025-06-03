@@ -4,9 +4,7 @@ import {getDocs, collection, doc, addDoc, deleteDoc, updateDoc} from 'firebase/f
 import PartyDetails from '../partyDetails/partyDetails';
 import { db } from '../config/firebase';
 import {useEffect, useState} from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router";
-import { useParams } from 'react-router';
-import { useLocation } from 'react-router';
+import { Link } from "react-router-dom";
 function Admin() {
     const [getPartyList, setPartyList] = useState([]);
 
@@ -75,6 +73,7 @@ function Admin() {
                     <h2 key={Party.id}>{Party.Title}</h2>
                     <Link to={`/party/${Party.Title}`} state={Party}>ohi</Link>
                     <button onClick={DeleteItem} value={Party.id}>Delete</button>
+                         <Link to={`./update/${Party.id}`} state={Party}>update</Link>
                     </>
                 )
             })}
