@@ -4,7 +4,7 @@ import {getDocs, collection, doc, addDoc, deleteDoc, updateDoc} from 'firebase/f
 import PartyDetails from '../partyDetails/partyDetails';
 import { db } from '../config/firebase';
 import {useEffect, useState} from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 function Admin() {
     const [getPartyList, setPartyList] = useState([]);
 

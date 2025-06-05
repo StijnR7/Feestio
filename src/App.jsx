@@ -4,7 +4,7 @@ import './App.css'
 import {getDocs, collection, doc, addDoc, deleteDoc, updateDoc} from 'firebase/firestore'
 import { db } from './config/firebase';
 import {useEffect, useState} from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router";
 import Admin from "./admin/admin";
 import PartyDetails from "./partyDetails/partyDetails";
 import Update from './update/update';
