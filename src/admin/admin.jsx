@@ -73,7 +73,7 @@ function Admin() {
                     <h2 key={Party.id}>{Party.Title}</h2>
                     <Link to={`/party/${Party.Title}`} state={Party}>ohi</Link>
                     <button onClick={DeleteItem} value={Party.id}>Delete</button>
-                         <Link to={`./update/${Party.id}`} state={Party}>update</Link>
+                    <Link to={`./update/${Party.id}`} state={Party}>update</Link>
                     </>
                 )
             })}
