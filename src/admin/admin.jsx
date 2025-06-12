@@ -5,37 +5,39 @@ import {
   doc,
   addDoc,
   deleteDoc,
-  updateDoc,
 } from "firebase/firestore";
-import { db, auth, googleProvider } from "../config/firebase";
+import { db, auth } from "../config/firebase";
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
-import { signInWithPopup } from "firebase/auth";
+import { Link, useNavigate } from "react-router-dom";
 
 function Admin() {
   const [getPartyList, setPartyList] = useState([]);
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      setUser(result.user);
-      console.log("Ingelogd als:", result.user.displayName);
-    } catch (error) {
-      console.error("Login mislukt:", error.message);
-    }
-    
-  };
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      if (!currentUser) {
+        navigate("/login"); 
+      } else {
+        setUser(currentUser);
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
+
+  useEffect(() => {
+    const getParty = async () => {
+      const data = await getDocs(collection(db, "Party"));
+      setPartyList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+    getParty();
+  }, []);
 
   const DeleteItem = async (e) => {
     e.preventDefault();
     const itemID = e.target.value;
     await deleteDoc(doc(db, "Party", itemID));
-  };
-
-  const UpdateItem = async (e) => {
-    e.preventDefault();
-    // Update logica hier toevoegen indien nodig
   };
 
   const AddItem = async (e) => {
@@ -49,19 +51,9 @@ function Admin() {
     });
   };
 
-  useEffect(() => {
-    const getParty = async () => {
-      const data = await getDocs(collection(db, "Party"));
-      setPartyList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
-    getParty();
-  }, []);
-
   return (
     <>
-        
-      <button onClick={handleGoogleLogin}>Log in met Google</button>
-      {user && <p>Ingelogd als: {user.displayName}</p>}
+      <p>Ingelogd als: {user?.displayName || user?.email}</p>
 
       <form onSubmit={AddItem}>
         <p>Title</p>
