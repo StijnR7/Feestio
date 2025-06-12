@@ -21,9 +21,9 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Admin />} />
+        <Route path="/admin" element={<Admin />} />
         <Route path="party/:id" element={<PartyDetails />} />
-        <Route path="update/:id" element={<Update />} />
+        <Route path="admin/update/:id" element={<Update />} />
         <Route path="/login" element={<Login />} />
       </Routes>
     </>

@@ -12,7 +12,7 @@ function Update() {
   const [locationName, setLocationName] = useState(party?.Location || '');
   const [startTime, setStartTime] = useState(party?.StartTime || '');
   const [endTime, setEndTime] = useState(party?.EndTime || '');
-
+  
   const handleUpdate = async (e) => {
     e.preventDefault();
     await updateDoc(doc(db, 'Party', id), {
@@ -20,6 +20,7 @@ function Update() {
       Location: locationName,
       StartTime: startTime,
       EndTime: endTime,
+      ImageURL: party.ImageURL
     });
   };
 
@@ -35,6 +36,7 @@ function Update() {
       <p>End Time</p>
       <input type="datetime-local" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
       <br />
+      
       <button type="submit">Save</button>
     </form>
   );
