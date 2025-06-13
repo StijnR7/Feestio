@@ -16,6 +16,8 @@ import Admin from "./admin/admin";
 import PartyDetails from "./partyDetails/partyDetails";
 import Update from "./update/update";
 import Login from "./login/login";
+import Home from "./home/home";
+import Account from "./account/account"
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
         <Route path="party/:id" element={<PartyDetails />} />
         <Route path="admin/update/:id" element={<Update />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Home/>}/>
+        <Route path="account/:id" element={<Account/>}/>
       </Routes>
     </>
   );

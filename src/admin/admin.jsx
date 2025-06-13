@@ -23,6 +23,7 @@ function Admin() {
         navigate("/login");
       } else {
         setUser(currentUser);
+       
       }
     });
     return () => unsubscribe();
@@ -80,13 +81,14 @@ function Admin() {
       EndTime: e.target.EndTime.value,
       OrganizationID: 1,
       ImageURL: imageUrl,
+      userUID: user.uid
     });
   };
 
   return (
     <>
       <p>Ingelogd als: {user?.displayName || user?.email}</p>
-
+    
       <form onSubmit={AddItem}>
         <p>Title</p>
         <input placeholder="Party name" type="text" name="Title" />
@@ -107,7 +109,7 @@ function Admin() {
           <h2>{Party.Title}</h2>
           {Party.ImageURL && <img src={Party.ImageURL} alt={Party.Title} style={{ width: 150 }} />}
           <Link to={`/party/${Party.Title}`} state={Party}>
-            ohi
+            Details
           </Link>
           <button onClick={DeleteItem} value={Party.id}>
             Delete

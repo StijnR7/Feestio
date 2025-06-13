@@ -15,8 +15,8 @@ function partyDetails() {
           Title: {party.Title} <br />
           Location: {party.Location} <br />
           Start Time: {party.StartTime} <br />
-          End Time: {party.EndTime}
-         
+          End Time: {party.EndTime} <br></br>
+         <img src={party.ImageURL} alt={party.Title} />
         </>
     )
 
