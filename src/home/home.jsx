@@ -45,7 +45,7 @@ function Home() {
                 <p>Start time: {Party.StartTime}</p>
                 <p>End Time: {Party.EndTime}</p>
 
-                <Link to={`/party/${Party.Title}`} state={{ party: Party, id: uid }}>
+                <Link to={`/party/${Party.Title}`} state={Party}>
                   Details
                 </Link>
               </div>
