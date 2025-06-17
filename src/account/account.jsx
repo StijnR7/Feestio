@@ -44,7 +44,7 @@ function Account(){
     if (imageFile) {
       imageUrl = await uploadImage(imageFile);
     }
-
+    const private1 = e.target.isPrivate.value === "on";
     await addDoc(collection(db, "Party"), {
       Title: e.target.Title.value,
       Location: e.target.Location.value,
@@ -52,6 +52,7 @@ function Account(){
       EndTime: e.target.EndTime.value,
       OrganizationID: 1,
       ImageURL: imageUrl,
+      isPrivate: private1,
       userUID: account.uid
     });
   };
@@ -84,6 +85,8 @@ function Account(){
         <p>Image</p>
         <input type="file" onChange={handleImageChange} />
         <br />
+        <p>Private</p>
+        <input type="checkbox" name="isPrivate"/>
         <button type="submit">go</button>
       </form>
 
