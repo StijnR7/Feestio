@@ -1,0 +1,70 @@
+/* header.css */
+
+header {
+  background-color: #0f0f0f;
+  padding: 1rem 2rem;
+  border-bottom: 2px solid #0ff;
+  box-shadow: 0 0 20px #0ff;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+nav {
+  display: flex;
+  justify-content: center; /* Center the entire nav */
+  align-items: center;
+}
+
+nav ul {
+  display: flex;
+  justify-content: center; /* Center items inside the list */
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav li {
+  position: relative;
+}
+
+nav a {
+  text-decoration: none;
+  color: #0ff;
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  transition: all 0.3s ease-in-out;
+  padding: 0.5rem 1rem;
+  border: 2px solid transparent;
+  border-radius: 10px;
+}
+
+nav a:hover {
+  color: #fff;
+  background: linear-gradient(45deg, #0ff, #f0f, #0f0);
+  box-shadow: 0 0 15px #0ff, 0 0 25px #f0f, 0 0 35px #0f0;
+  border-color: #0ff;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 10px #0ff, 0 0 20px #f0f, 0 0 30px #0f0;
+  }
+  50% {
+    box-shadow: 0 0 20px #0ff, 0 0 30px #f0f, 0 0 40px #0f0;
+  }
+  100% {
+    box-shadow: 0 0 10px #0ff, 0 0 20px #f0f, 0 0 30px #0f0;
+  }
+}
+
+/* Futuristisch lettertype */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+nav a {
+  font-family: 'Orbitron', sans-serif;
+}

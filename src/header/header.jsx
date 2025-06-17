@@ -10,6 +10,8 @@ import { db, auth } from "../config/firebase";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import supabase from "../config/supabase";
+import "./header.css";
+
 
 function Header() {
   const navigate = useNavigate();
