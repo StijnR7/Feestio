@@ -11,7 +11,6 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import supabase from "../config/supabase";
 import Header from '../header/header'
-import ZoekFunctie from '../ZoekFunctie/ZoekFunctie'
 function Home(){
     const [getPartyList, setPartyList] = useState([]);
     const [filter, setFilter] = useState("")
@@ -34,7 +33,7 @@ return(
 
     <>
     <Header/>
-  <input type="text" onChange={HandleChange} />
+  <input type="text" onChange={HandleChange} placeholder="Search" />
     <div className="postContainer">
     {getPartyList.filter((item) => item.Title.includes(filter)).map((Party)      => (
         
