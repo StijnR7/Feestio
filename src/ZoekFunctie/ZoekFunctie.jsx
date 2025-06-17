@@ -1,4 +1,3 @@
-import "./home.css";
 import {
   getDocs,
   collection,
@@ -13,7 +12,11 @@ import supabase from "../config/supabase";
 
 
 function ZoekFunctie(){
-    return(<></>)
+    return(<>
+    
+        <input type="text" onChange={console.log("Changed")} />
+    
+    </>)
 }
 
 export default ZoekFunctie;

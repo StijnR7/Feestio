@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import supabase from "../config/supabase";
 import Header from '../header/header'
-
+import ZoekFunctie from '../ZoekFunctie/ZoekFunctie'
 function Home(){
     const [getPartyList, setPartyList] = useState([]);
 
@@ -26,6 +26,7 @@ return(
 
     <>
     <Header/>
+    <ZoekFunctie/>
     <div className="postContainer">
     {getPartyList.map((Party) => (
         
