@@ -8,6 +8,7 @@ import {
   where,
   updateDoc,
   doc,
+  or,
 } from "firebase/firestore";
 import Header from "../header/header";
 
@@ -15,6 +16,7 @@ function Friends() {
   const [email, setEmail] = useState("");
   const [sentRequests, setSentRequests] = useState([]);
   const [receivedRequests, setReceivedRequests] = useState([]);
+  const [acceptedFriends, setAcceptedFriends] = useState([]);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -29,23 +31,37 @@ function Friends() {
   }, []);
 
   const fetchRequests = async (uid) => {
+    // verzoeken versturn
     const sentQuery = query(
       collection(db, "friendRequests"),
       where("from", "==", uid)
     );
     const sentSnapshot = await getDocs(sentQuery);
-    setSentRequests(
-      sentSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-    );
+    const sent = sentSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    setSentRequests(sent);
 
+    // verzoek krijgen 
     const receivedQuery = query(
       collection(db, "friendRequests"),
       where("to", "==", uid)
     );
     const receivedSnapshot = await getDocs(receivedQuery);
-    setReceivedRequests(
-      receivedSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+    const received = receivedSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    setReceivedRequests(received);
+
+    // status van vrienden acepteren
+    const acceptedQuery = query(
+      collection(db, "friendRequests"),
+      or(
+        where("from", "==", uid),
+        where("to", "==", uid)
+      )
     );
+    const acceptedSnapshot = await getDocs(acceptedQuery);
+    const accepted = acceptedSnapshot.docs
+      .map((doc) => ({ id: doc.id, ...doc.data() }))
+      .filter((req) => req.status === "accepted");
+    setAcceptedFriends(accepted);
   };
 
   const sendRequest = async () => {
@@ -56,14 +72,14 @@ function Friends() {
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
-      alert("No user found with that email.");
+      alert("Geen gebruiker gevonden met dat e-mailadres.");
       return;
     }
 
     const toUser = querySnapshot.docs[0].id;
 
     if (toUser === user.uid) {
-      alert("You can't send a request to yourself.");
+      alert("Je kunt geen verzoek naar jezelf sturen.");
       return;
     }
 
@@ -74,7 +90,7 @@ function Friends() {
     );
     const existingSnap = await getDocs(existing);
     if (!existingSnap.empty) {
-      alert("Friend request already sent.");
+      alert("Vriendschapsverzoek al verstuurd.");
       return;
     }
 
@@ -87,7 +103,7 @@ function Friends() {
 
     setEmail("");
     fetchRequests(user.uid);
-    alert("Friend request sent!");
+    alert("Vriendschapsverzoek verzonden!");
   };
 
   const acceptRequest = async (requestId) => {
@@ -112,43 +128,49 @@ function Friends() {
     <>
       <Header />
 
-      <div>
+      <div style={{ padding: "20px" }}>
         <h1>Friends Page</h1>
 
         <div>
           <input
             type="email"
             value={email}
-            placeholder="Friend's Email"
+            placeholder="Vriend's e-mailadres"
             onChange={(e) => setEmail(e.target.value)}
           />
-          <button onClick={sendRequest}>Send Friend Request</button>
+          <button onClick={sendRequest}>Verstuur verzoek</button>
         </div>
 
         <hr />
 
-        <h2>Incoming Requests</h2>
+        <h2>Ontvangen verzoeken</h2>
         <ul>
-          {receivedRequests.map((req) => (
+          {receivedRequests
+            .filter((req) => req.status === "pending")
+            .map((req) => (
+              <li key={req.id}>
+                Van: {req.from} — Status: {req.status}
+                <button onClick={() => acceptRequest(req.id)}>Accepteren</button>
+                <button onClick={() => rejectRequest(req.id)}>Weigeren</button>
+              </li>
+            ))}
+        </ul>
+
+        <h2>Verstuurde verzoeken</h2>
+        <ul>
+          {sentRequests.map((req) => (
             <li key={req.id}>
-              From: {req.from} — Status: {req.status}
-              {req.status === "pending" && (
-                <>
-                  <button onClick={() => acceptRequest(req.id)}>Accept</button>
-                  <button onClick={() => rejectRequest(req.id)}>Reject</button>
-                </>
-              )}
+              Naar: {req.to} — Status: {req.status}
             </li>
           ))}
         </ul>
 
-        <h2>Sent Requests</h2>
+        <h2>Friends</h2>
         <ul>
-          {sentRequests.map((req) => (
-            <li key={req.id}>
-              To: {req.to} — Status: {req.status}
-            </li>
-          ))}
+          {acceptedFriends.map((friend) => {
+            const friendId = friend.from === user.uid ? friend.to : friend.from;
+            return <li key={friend.id}>user UID: {friendId}</li>;
+          })}
         </ul>
       </div>
     </>
