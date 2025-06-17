@@ -12,9 +12,11 @@ import supabase from "../config/supabase";
 
 
 function ZoekFunctie(){
+
+
     return(<>
     
-        <input type="text" onChange={console.log("Changed")} />
+        
     
     </>)
 }

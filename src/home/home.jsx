@@ -14,7 +14,15 @@ import Header from '../header/header'
 import ZoekFunctie from '../ZoekFunctie/ZoekFunctie'
 function Home(){
     const [getPartyList, setPartyList] = useState([]);
+    const [filter, setFilter] = useState("")
+    const HandleChange = (e) => {
+        e.preventDefault();
+        
+        const search = e.target.value.trim();
+        setFilter(search)
 
+
+    }
     useEffect(() => {
     const getParty = async () => {
       const data = await getDocs(collection(db, "Party"));
@@ -26,9 +34,9 @@ return(
 
     <>
     <Header/>
-    <ZoekFunctie/>
+  <input type="text" onChange={HandleChange} />
     <div className="postContainer">
-    {getPartyList.map((Party) => (
+    {getPartyList.filter((item) => item.Title.includes(filter)).map((Party)      => (
         
         <div className="outerPost">
             <div className="titleContainer">
