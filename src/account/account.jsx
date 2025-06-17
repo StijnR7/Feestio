@@ -11,6 +11,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import "./account.css";
 import supabase from "../config/supabase";
 import Header from '../header/header'
+import "./account.css";
 function Account(){
     const [imageFile, setImageFile] = useState(null);
     const location = useLocation();

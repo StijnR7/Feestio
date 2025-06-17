@@ -8,6 +8,8 @@ import {
 } from "firebase/auth";
 import { auth, googleProvider } from "../config/firebase";
 import Header from '../header/header'
+import "./login.css";
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
