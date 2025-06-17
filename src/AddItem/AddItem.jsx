@@ -1,3 +1,4 @@
+
 import {
   getDocs,
   collection,
@@ -7,18 +8,31 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "../config/firebase";
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router";
-import "./account.css";
+import { Link, useNavigate } from "react-router";
 import supabase from "../config/supabase";
-import Header from '../header/header'
-function Account(){
-    const [imageFile, setImageFile] = useState(null);
-    const location = useLocation();
-    const account = location.state;
-  const handleImageChange = (e) => {
-    setImageFile(e.target.files[0]);
+
+
+function AddItem(){
+
+    const uploadImage = async (file) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `${fileName}`;
+
+    const { error } = await supabase.storage
+      .from('images')
+      .upload(filePath, file);
+
+    if (error) throw error;
+
+    const { data: publicUrlData } = supabase.storage
+      .from('images')
+      .getPublicUrl(filePath);
+
+    return publicUrlData.publicUrl;
   };
-  const AddItem = async (e) => {
+
+     const AddItem = async (e) => {
     e.preventDefault();
 
     let imageUrl = "";
@@ -34,17 +48,14 @@ function Account(){
       EndTime: e.target.EndTime.value,
       OrganizationID: 1,
       ImageURL: imageUrl,
-      userUID: account.uid
+      userUID: user.uid
     });
   };
 
-    return(
 
-        <>
-         <Header/>
-        {account.email}
-        
-        
+    return(<>
+    
+    
       <form onSubmit={AddItem}>
         <p>Title</p>
         <input placeholder="Party name" type="text" name="Title" />
@@ -59,9 +70,8 @@ function Account(){
         <br />
         <button type="submit">go</button>
       </form>
-        </>
+    
+    </>)
 
-    )
 }
-
-export default Account;
+export default AddItem;

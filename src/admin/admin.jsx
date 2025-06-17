@@ -10,7 +10,7 @@ import { db, auth } from "../config/firebase";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import supabase from "../config/supabase";
-
+import Header from '../header/header'
 function Admin() {
   const [getPartyList, setPartyList] = useState([]);
   const [user, setUser] = useState(null);
@@ -87,8 +87,9 @@ function Admin() {
 
   return (
     <>
+    <Header/>
       <p>Ingelogd als: {user?.displayName || user?.email}</p>
-    
+
       <form onSubmit={AddItem}>
         <p>Title</p>
         <input placeholder="Party name" type="text" name="Title" />

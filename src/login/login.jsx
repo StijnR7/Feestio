@@ -7,7 +7,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { auth, googleProvider } from "../config/firebase";
-
+import Header from '../header/header'
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,6 +42,7 @@ function Login() {
 
   return (
     <div>
+       <Header/>
       <h2>{isRegistering ? "Registreren" : "Inloggen"}</h2>
       <form onSubmit={handleEmailSubmit}>
         <input
