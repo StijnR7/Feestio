@@ -23,6 +23,8 @@ function Header() {
         navigate("/login");
       } else {
         setUser(currentUser);
+        localStorage.setItem("user", currentUser)
+        console.log(localStorage.getItem("user").displayName)
       }
     });
     return () => unsubscribe();
@@ -32,7 +34,7 @@ function Header() {
     <header>
       <nav>
         <ul className="">
-          <li><Link to="/">Home</Link></li>
+          <li><Link to="/" state={user?.uid}>Home</Link></li>
           <li><Link to="/login">Login</Link></li>
           {user && (
             <li><Link to={`/account/${user.uid}`}   

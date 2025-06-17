@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
   getAuth,
@@ -10,16 +10,32 @@ import { auth, googleProvider } from "../config/firebase";
 import Header from '../header/header'
 import "./login.css";
 
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [user, setUser] = useState(null);
   const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
+
+useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      if (!currentUser) {
+        navigate("/login");
+      } else {
+        setUser(currentUser);
+       
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
+
 
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       console.log("Ingelogd als:", result.user.displayName);
+     
       navigate("/admin");
     } catch (error) {
       console.error("Google Login mislukt:", error.message);
