@@ -1,0 +1,39 @@
+/* partyDetails.css */
+
+body {
+  background-color: #0a0a0a;
+  font-family: 'Orbitron', sans-serif;
+  color: #0ff;
+  margin: 0;
+  padding: 0;
+}
+
+.party-container {
+  max-width: 700px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: #111;
+  border: 2px solid #0ff;
+  border-radius: 20px;
+  box-shadow: 0 0 30px #0ff;
+  text-align: center;
+}
+
+.party-container h2 {
+  color: #f0f;
+  text-shadow: 0 0 10px #f0f;
+  margin-bottom: 1.5rem;
+}
+
+.party-container p {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+}
+
+.party-container img {
+  margin-top: 1.5rem;
+  max-width: 100%;
+  border-radius: 15px;
+  border: 2px solid #0ff;
+  box-shadow: 0 0 20px #0ff, 0 0 30px #f0f;
+}
