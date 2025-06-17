@@ -1,25 +1,21 @@
-
 import './partyDetails.css'
-import {getDocs, collection, doc, addDoc, deleteDoc, updateDoc} from 'firebase/firestore'
-import { db } from '../config/firebase';
-import {useEffect, useState} from "react";
-import { useParams } from 'react-router';
 import { useLocation } from 'react-router';
-function partyDetails() {
-   
+
+function PartyDetails() {
   const location = useLocation();  
   const party = location.state;
 
-    return (
-        <>
-          Title: {party.Title} <br />
-          Location: {party.Location} <br />
-          Start Time: {party.StartTime} <br />
-          End Time: {party.EndTime} <br></br>
-         <img src={party.ImageURL} alt={party.Title} />
-        </>
-    )
-
+  return (
+    <div className="party-container">
+      <h2>{party.Title}</h2>
+      <p><strong>Location:</strong> {party.Location}</p>
+      <p><strong>Start:</strong> {party.StartTime}</p>
+      <p><strong>End:</strong> {party.EndTime}</p>
+      {party.ImageURL && (
+        <img src={party.ImageURL} alt={party.Title} />
+      )}
+    </div>
+  );
 }
 
-export default partyDetails
+export default PartyDetails;
