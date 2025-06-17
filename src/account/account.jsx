@@ -3,9 +3,10 @@ import {
   collection,
   doc,
   addDoc,
-  deleteDoc,
+  deleteDoc
 } from "firebase/firestore";
-import { db, auth } from "../config/firebase";
+import { db, auth  } from "../config/firebase";
+import { getAuth, signOut } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import "./account.css";
@@ -16,9 +17,15 @@ function Account(){
     const [imageFile, setImageFile] = useState(null);
     const location = useLocation();
     const account = location.state;
+    const auth = getAuth();
+ const handleLogout = async () => {
+    signOut(auth).then(() => {console.log("signed out")}).catch((error) => {console.log("Not skibidi")});
+  };
+
   const handleImageChange = (e) => {
     setImageFile(e.target.files[0]);
   };
+  
   const AddItem = async (e) => {
     e.preventDefault();
 
@@ -60,6 +67,7 @@ function Account(){
         <br />
         <button type="submit">go</button>
       </form>
+      <button onClick={handleLogout}>Log out</button>
         </>
 
     )
