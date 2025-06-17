@@ -21,7 +21,7 @@ function Header() {
           userRef,
           {
             email: currentUser.email,
-            displayName: currentUser.displayName || "",
+            uid: currentUser.uid || "",
           },
           { merge: true }
         );

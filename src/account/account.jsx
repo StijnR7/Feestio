@@ -15,6 +15,8 @@ import Header from '../header/header'
 import "./account.css";
 function Account(){
     const [imageFile, setImageFile] = useState(null);
+    const [registeredPartyList, setRegisteredPartyList] = useState([]);
+
     const location = useLocation();
     const account = location.state;
     const auth = getAuth();
@@ -25,6 +27,14 @@ function Account(){
   const handleImageChange = (e) => {
     setImageFile(e.target.files[0]);
   };
+
+ useEffect(() => {
+    const getParty = async () => {
+      const data = await getDocs(collection(db, "registrations"));
+      setRegisteredPartyList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+    getParty();
+  }, []);
   
   const AddItem = async (e) => {
     e.preventDefault();
@@ -45,6 +55,15 @@ function Account(){
       userUID: account.uid
     });
   };
+
+  const ShowFilteredRegistrations = () => {
+  return (
+    <>
+      {}
+    </>
+  );
+};
+
 
     return(
 
@@ -67,7 +86,15 @@ function Account(){
         <br />
         <button type="submit">go</button>
       </form>
+
       <button onClick={handleLogout}>Log out</button>
+      <ul>
+        {registeredPartyList
+        .filter((item) => item.uid === account.uid)
+        .map((party) => (
+          <div key={party.id}>{party.Title}</div>
+        ))}
+      </ul>
         </>
 
     )

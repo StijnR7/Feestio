@@ -31,7 +31,8 @@ function PartyDetails() {
 
     await addDoc(collection(db, "registrations"), {
       partyID: party.id,
-      uid: user.uid
+      uid: user.uid,
+      Title: party.Title
       
     });
   };
