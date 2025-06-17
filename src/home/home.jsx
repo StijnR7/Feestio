@@ -9,10 +9,12 @@ import { db } from "../config/firebase";
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import Header from '../header/header';
-
+import { getAuth } from "firebase/auth";
 function Home() {
   const location = useLocation();
-  const uid = location.state?.id || null;
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const uid = user?.uid || null;
 
   const [getPartyList, setPartyList] = useState([]);
   const [filter, setFilter] = useState("");
@@ -26,21 +28,33 @@ function Home() {
   const isFriend = async (userUid, posterUid) => {
     if (!userUid || !posterUid) return false;
 
-    const q = query(
+    const q1 = query(
       collection(db, "friendRequests"),
-      where("status", "==", "accepted"),
-      where("from", "in", [userUid, posterUid]),
-      where("to", "in", [userUid, posterUid])
+      where("from", "==", userUid),
+      where("to", "==", posterUid),
+      where("status", "==", "accepted")
     );
 
-    const snapshot = await getDocs(q);
-    return !snapshot.empty;
+    const q2 = query(
+      collection(db, "friendRequests"),
+      where("from", "==", posterUid),
+      where("to", "==", userUid),
+      where("status", "==", "accepted")
+    );
+
+    const [snap1, snap2] = await Promise.all([getDocs(q1), getDocs(q2)]);
+    const friendResult = !snap1.empty || !snap2.empty;
+
+    console.log(`Friend check between ${userUid} and ${posterUid}: ${friendResult}`);
+    return friendResult;
   };
 
   useEffect(() => {
     const getParty = async () => {
       const data = await getDocs(collection(db, "Party"));
-      setPartyList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      const parties = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      console.log("Fetched parties:", parties);
+      setPartyList(parties);
     };
     getParty();
   }, []);
@@ -53,20 +67,35 @@ function Home() {
           item.Title.toLowerCase().includes(filter.toLowerCase())
       );
 
+      console.log("Filtered private parties to check:", privateFiltered);
+
       const visible = [];
 
       for (const item of privateFiltered) {
-        const friend = await isFriend(uid, item.uid);
+        if (!item.userUID) {
+          console.warn("Party missing userUID:", item);
+          continue;
+        }
+        console.log(`Checking party: ${item.Title} with userUID: ${item.userUID}`);
+
+        const friend = await isFriend(uid, item.userUID);
+        console.log(`Friend check between ${uid} and ${item.userUID}: ${friend}`);
+
         if (friend) visible.push(item);
       }
 
+      console.log("Visible private parties after friend checks:", visible);
       setVisiblePrivateParties(visible);
     };
 
-    if (uid) {
-      checkPrivateParties();
+    if (uid && getPartyList.length > 0) {
+      (async () => {
+        await checkPrivateParties();
+      })();
     }
   }, [filter, getPartyList, uid]);
+
+  console.log("Current user UID:", uid);
 
   return (
     <>
@@ -97,7 +126,7 @@ function Home() {
             </div>
           ))}
 
-        {/* Private parties (only show if user is a friend of the poster) */}
+        {/* Private parties - shown only if user is a friend of poster */}
         {visiblePrivateParties.map((Party) => (
           <div className="outerPost" key={Party.id}>
             <div className="titleContainer">

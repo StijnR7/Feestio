@@ -1,50 +1,56 @@
 import {
   getDocs,
   collection,
-  doc,
-  addDoc,
-  deleteDoc
+  addDoc
 } from "firebase/firestore";
-import { db, auth  } from "../config/firebase";
+import { db } from "../config/firebase";
 import { getAuth, signOut } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
+import Header from '../header/header';
 import "./account.css";
-import supabase from "../config/supabase";
-import Header from '../header/header'
-import "./account.css";
-function Account(){
-    const [imageFile, setImageFile] = useState(null);
-    const [registeredPartyList, setRegisteredPartyList] = useState([]);
 
-    const location = useLocation();
-    const account = location.state;
-    const auth = getAuth();
- const handleLogout = async () => {
-    signOut(auth).then(() => {console.log("signed out")}).catch((error) => {console.log("Not skibidi")});
+function Account() {
+  const [imageFile, setImageFile] = useState(null);
+  const [registeredPartyList, setRegisteredPartyList] = useState([]);
+
+  const location = useLocation();
+  const account = location.state;
+  const auth = getAuth();
+
+  const handleLogout = async () => {
+    signOut(auth)
+      .then(() => {
+        console.log("signed out");
+      })
+      .catch((error) => {
+        console.log("Error signing out:", error);
+      });
   };
 
   const handleImageChange = (e) => {
     setImageFile(e.target.files[0]);
   };
 
- useEffect(() => {
+  useEffect(() => {
     const getParty = async () => {
       const data = await getDocs(collection(db, "registrations"));
       setRegisteredPartyList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
     getParty();
   }, []);
-  
+
   const AddItem = async (e) => {
     e.preventDefault();
 
     let imageUrl = "";
 
     if (imageFile) {
-      imageUrl = await uploadImage(imageFile);
+      imageUrl = await uploadImage(imageFile); // make sure uploadImage is defined somewhere
     }
-    const private1 = e.target.isPrivate.value === "on";
+
+    const private1 = e.target.isPrivate.checked;
+
     await addDoc(collection(db, "Party"), {
       Title: e.target.Title.value,
       Location: e.target.Location.value,
@@ -57,22 +63,11 @@ function Account(){
     });
   };
 
-  const ShowFilteredRegistrations = () => {
   return (
     <>
-      {}
-    </>
-  );
-};
+      <Header />
+      <div>{account.email}</div>
 
-
-    return(
-
-        <>
-         <Header/>
-        {account.email}
-        
-        
       <form onSubmit={AddItem}>
         <p>Title</p>
         <input placeholder="Party name" type="text" name="Title" />
@@ -86,21 +81,21 @@ function Account(){
         <input type="file" onChange={handleImageChange} />
         <br />
         <p>Private</p>
-        <input type="checkbox" name="isPrivate"/>
+        <input type="checkbox" name="isPrivate" />
         <button type="submit">go</button>
       </form>
 
       <button onClick={handleLogout}>Log out</button>
+
       <ul>
         {registeredPartyList
-        .filter((item) => item.uid === account.uid)
-        .map((party) => (
-          <div key={party.id}>{party.Title}</div>
-        ))}
+          .filter((item) => item.uid === account.uid)
+          .map((party) => (
+            <li key={party.id}>{party.Title}</li>
+          ))}
       </ul>
-        </>
-
-    )
+    </>
+  );
 }
 
 export default Account;
