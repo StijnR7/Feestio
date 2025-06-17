@@ -17,7 +17,7 @@ function Account(){
 
 
     return(
-        <>{account.displayName}</>
+        <>{account.email}</>
 
     )
 }
