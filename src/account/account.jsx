@@ -7,7 +7,9 @@ import { db } from "../config/firebase";
 import { getAuth, signOut } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
-import Header from '../header/header';
+import Header from "../header/header";
+import supabase  from "../config/supabase"; // Make sure this is set up
+
 import "./account.css";
 
 function Account() {
@@ -35,10 +37,33 @@ function Account() {
   useEffect(() => {
     const getParty = async () => {
       const data = await getDocs(collection(db, "registrations"));
-      setRegisteredPartyList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setRegisteredPartyList(
+        data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+      );
     };
     getParty();
   }, []);
+
+  const uploadImage = async (file) => {
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `public/${fileName}`; // Optional: organize into folders
+
+    const { data, error } = await supabase.storage
+      .from("images") // <-- replace with your Supabase bucket
+      .upload(filePath, file);
+
+    if (error) {
+      console.error("Image upload error:", error.message);
+      return "";
+    }
+
+    const { data: urlData } = supabase.storage
+      .from("images")
+      .getPublicUrl(filePath);
+
+    return urlData?.publicUrl || "";
+  };
 
   const AddItem = async (e) => {
     e.preventDefault();
@@ -46,7 +71,7 @@ function Account() {
     let imageUrl = "";
 
     if (imageFile) {
-      imageUrl = await uploadImage(imageFile); // make sure uploadImage is defined somewhere
+      imageUrl = await uploadImage(imageFile);
     }
 
     const private1 = e.target.isPrivate.checked;
@@ -70,19 +95,18 @@ function Account() {
 
       <form onSubmit={AddItem}>
         <p>Title</p>
-        <input placeholder="Party name" type="text" name="Title" />
+        <input placeholder="Party name" type="text" name="Title" required />
         <p>Location</p>
-        <input name="Location" type="text" />
+        <input name="Location" type="text" required />
         <p>Start Time</p>
-        <input name="StartTime" type="datetime-local" />
+        <input name="StartTime" type="datetime-local" required />
         <p>End Time</p>
-        <input name="EndTime" type="datetime-local" />
+        <input name="EndTime" type="datetime-local" required />
         <p>Image</p>
-        <input type="file" onChange={handleImageChange} />
-        <br />
+        <input type="file" accept="image/*" onChange={handleImageChange} />
         <p>Private</p>
         <input type="checkbox" name="isPrivate" />
-        <button type="submit">go</button>
+        <button type="submit">Submit</button>
       </form>
 
       <button onClick={handleLogout}>Log out</button>

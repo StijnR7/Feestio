@@ -18,6 +18,9 @@ function AddItem(){
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}.${fileExt}`;
     const filePath = `${fileName}`;
+const handleImageChange = (e) => {
+    setImageFile(e.target.files[0]);
+  };
 
     const { error } = await supabase.storage
       .from('images')
